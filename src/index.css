@@ -1,0 +1,21 @@
+/* echogrid global styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Courier New', monospace;
+  color: #00ff88;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}

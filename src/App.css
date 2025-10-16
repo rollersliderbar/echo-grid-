@@ -1,0 +1,37 @@
+/* echogrid canvas styling - signal aesthetic */
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+  position: relative;
+}
+
+.signal-canvas {
+  border: 1px solid  #1a1a1a;
+  box-shadow: 0 0 40px rgba(0,255,150, 0.15);
+  /* glowy signal vibe */
+  cursor: crosshair;
+}
+
+
+.debug-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0,255,136,0.6);
+  pointer-events: none;
+  line-height: 1.6;
+  letter-spacing:  1px;
+}
+
+.debug-overlay p {
+  margin: 4px   0;
+}
