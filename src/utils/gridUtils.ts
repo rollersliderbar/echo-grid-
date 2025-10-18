@@ -1,5 +1,3 @@
-// grid utility functions
-// init, color calcs, etc
 
 
 export interface GridCell {
@@ -7,11 +5,11 @@ export interface GridCell {
   y: number
   intensity: number
   color: string
-  // age?: number  // maybe track cell age later??
+  
 }
 
 
-// initialize empty grid
+
 export const initGrid = (size: number): GridCell[][] => {
   const grid: GridCell[][] = []
   
@@ -32,7 +30,7 @@ export const initGrid = (size: number): GridCell[][] => {
 }
 
 
-// calculate color from intensity value
+
 export const getColorFromIntensity = (intensity: number): string => {
   if (intensity > 0.7) {
     return '#00ff88'  
@@ -43,11 +41,11 @@ export const getColorFromIntensity = (intensity: number): string => {
   } else {
     return '#0a0a0a'  
   }
-  // could add more color tiers??
+  
 }
 
 
-// update cell color based on its intensity
+
 export const updateCellColor = (cell: GridCell): void => {
   cell.color = getColorFromIntensity(cell.intensity)
 }

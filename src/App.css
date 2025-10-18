@@ -1,6 +1,6 @@
-/* echogrid canvas styling - signal aesthetic */
 
-.app-container {
+
+.App {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -11,8 +11,8 @@
   position: relative;
 }
 
-.signal-canvas {
-  border: 1px solid  #1a1a1a;
+canvas {
+  border: 1px solid  #1a1a1a; 
   box-shadow: 0 0 40px rgba(0,255,150, 0.15);
   /* glowy signal vibe */
   cursor: crosshair;
