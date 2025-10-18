@@ -8,6 +8,7 @@ import { emitSignalBurst, decaySignals } from './utils/signalUtils'
 import { createRipple, updateRipples } from './utils/rippleUtils'
 import type { Ripple } from './utils/rippleUtils'
 import { applyNoise } from './utils/noiseUtils'
+import type { SignalColor } from './utils/colorUtils'
 
 
 const GRID_SIZE = 32
@@ -26,6 +27,7 @@ function App( ) {
   const [signalCount, setSignalCount] = useState(0)
   const [ripples, setRipples] = useState<Ripple[]>([])
   const [noiseEnabled, setNoiseEnabled] = useState(true)
+  const [currentColor, setCurrentColor] = useState<SignalColor>('green')
 
 
   useEffect(() => {
@@ -40,6 +42,31 @@ function App( ) {
       if (e.key === 'n' || e.key === 'N') {
         setNoiseEnabled(prev => !prev)
         console.log(`noise ${!noiseEnabled ? 'on' : 'off'}`)
+      }
+      
+      if (e.key === '1') {
+        setCurrentColor('green')
+        console.log('color: green')
+      }
+      if (e.key === '2') {
+        setCurrentColor('red')
+        console.log('color: red')
+      }
+      if (e.key === '3') {
+        setCurrentColor('blue')
+        console.log('color: blue')
+      }
+      if (e.key === '4') {
+        setCurrentColor('cyan')
+        console.log('color: cyan')
+      }
+      if (e.key === '5') {
+        setCurrentColor('magenta')
+        console.log('color: magenta')
+      }
+      if (e.key === '6') {
+        setCurrentColor('yellow')
+        console.log('color: yellow')
       }
     }
 
@@ -103,12 +130,12 @@ function App( ) {
     const gridY = Math.floor(clickY / CELL_SIZE)
     console.log(`signal burst at ${gridX}, ${gridY}`)
 
-    const newGrid = emitSignalBurst(gridData, gridX, gridY, BURST_RADIUS, GRID_SIZE)
+    const newGrid = emitSignalBurst(gridData, gridX, gridY, BURST_RADIUS, GRID_SIZE, currentColor)
     setGridData(newGrid)
     setSignalCount(signalCount + 1)
 
 
-    const newRipple = createRipple(gridX, gridY)
+    const newRipple = createRipple(gridX, gridY, currentColor)
     setRipples([...ripples, newRipple])
   }
 
@@ -156,14 +183,17 @@ function App( ) {
       />
       
       <div className="debug-overlay">
-        <p>echogrid v0.4</p>
+        <p>echogrid v0.5</p>
         <p>signals: {signalCount}</p>
         <p>ripples: {ripples.length}</p>
-        <p style={{fontSize: '9px', opacity: 0.5}}>
-          decay: {DECAY_RATE}
+        <p style={{fontSize: '10px', opacity: 0.7}}>
+          color: <span style={{color: currentColor}}>{currentColor}</span>
         </p>
         <p style={{fontSize: '9px', opacity: 0.5}}>
-          noise: {noiseEnabled ? 'on' : 'off'} [n]
+          [1-6] colors  [n] noise
+        </p>
+        <p style={{fontSize: '9px', opacity: 0.5}}>
+          noise: {noiseEnabled ? 'on' : 'off'}
         </p>
       </div>
     </div>

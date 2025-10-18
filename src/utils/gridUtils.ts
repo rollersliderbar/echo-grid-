@@ -5,7 +5,9 @@ export interface GridCell {
   y: number
   intensity: number
   color: string
-  
+  r: number
+  g: number
+  b: number
 }
 
 
@@ -20,7 +22,10 @@ export const initGrid = (size: number): GridCell[][] => {
         x,
         y,
         intensity: 0,
-        color: '#0a0a0a'  
+        color: '#0a0a0a',
+        r: 10,
+        g: 10,
+        b: 10
       })
     }
     grid.push(row)
@@ -46,6 +51,14 @@ export const getColorFromIntensity = (intensity: number): string => {
 
 
 
+export const rgbToHex = (r: number, g: number, b: number): string => {
+  const clamp = (val: number) => Math.max(0, Math.min(255, Math.floor(val)))
+  const toHex = (val: number) => clamp(val).toString(16).padStart(2, '0')
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
+
+
 export const updateCellColor = (cell: GridCell): void => {
-  cell.color = getColorFromIntensity(cell.intensity)
+  cell.color = rgbToHex(cell.r, cell.g, cell.b)
 }
