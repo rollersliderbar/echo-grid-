@@ -9,6 +9,7 @@ import { createRipple, updateRipples } from './utils/rippleUtils'
 import type { Ripple } from './utils/rippleUtils'
 import { applyNoise } from './utils/noiseUtils'
 import type { SignalColor } from './utils/colorUtils'
+import type { BurstPattern } from './utils/patternUtils'
 
 
 const GRID_SIZE = 32
@@ -28,6 +29,7 @@ function App( ) {
   const [ripples, setRipples] = useState<Ripple[]>([])
   const [noiseEnabled, setNoiseEnabled] = useState(true)
   const [currentColor, setCurrentColor] = useState<SignalColor>('green')
+  const [currentPattern, setCurrentPattern] = useState<BurstPattern>('radial')
 
 
   useEffect(() => {
@@ -67,6 +69,27 @@ function App( ) {
       if (e.key === '6') {
         setCurrentColor('yellow')
         console.log('color: yellow')
+      }
+      
+      if (e.key === 'q' || e.key === 'Q') {
+        setCurrentPattern('radial')
+        console.log('pattern: radial')
+      }
+      if (e.key === 'w' || e.key === 'W') {
+        setCurrentPattern('square')
+        console.log('pattern: square')
+      }
+      if (e.key === 'e' || e.key === 'E') {
+        setCurrentPattern('cross')
+        console.log('pattern: cross')
+      }
+      if (e.key === 'r' || e.key === 'R') {
+        setCurrentPattern('spiral')
+        console.log('pattern: spiral')
+      }
+      if (e.key === 't' || e.key === 'T') {
+        setCurrentPattern('random')
+        console.log('pattern: random')
       }
     }
 
@@ -130,7 +153,7 @@ function App( ) {
     const gridY = Math.floor(clickY / CELL_SIZE)
     console.log(`signal burst at ${gridX}, ${gridY}`)
 
-    const newGrid = emitSignalBurst(gridData, gridX, gridY, BURST_RADIUS, GRID_SIZE, currentColor)
+    const newGrid = emitSignalBurst(gridData, gridX, gridY, BURST_RADIUS, GRID_SIZE, currentColor, currentPattern)
     setGridData(newGrid)
     setSignalCount(signalCount + 1)
 
@@ -183,17 +206,20 @@ function App( ) {
       />
       
       <div className="debug-overlay">
-        <p>echogrid v0.5</p>
+        <p>echogrid v0.6</p>
         <p>signals: {signalCount}</p>
         <p>ripples: {ripples.length}</p>
         <p style={{fontSize: '10px', opacity: 0.7}}>
           color: <span style={{color: currentColor}}>{currentColor}</span>
         </p>
-        <p style={{fontSize: '9px', opacity: 0.5}}>
-          [1-6] colors  [n] noise
+        <p style={{fontSize: '10px', opacity: 0.7}}>
+          pattern: {currentPattern}
         </p>
         <p style={{fontSize: '9px', opacity: 0.5}}>
-          noise: {noiseEnabled ? 'on' : 'off'}
+          [1-6] colors  [qwert] patterns
+        </p>
+        <p style={{fontSize: '9px', opacity: 0.5}}>
+          [n] noise: {noiseEnabled ? 'on' : 'off'}
         </p>
       </div>
     </div>

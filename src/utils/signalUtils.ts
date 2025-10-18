@@ -2,6 +2,8 @@ import type { GridCell } from './gridUtils'
 import { updateCellColor } from './gridUtils'
 import type { SignalColor } from './colorUtils'
 import { getColorRGB, addColors } from './colorUtils'
+import type { BurstPattern } from './patternUtils'
+import { getPattern } from './patternUtils'
 
 
 
@@ -12,7 +14,8 @@ export const emitSignalBurst = (
   gridY: number,
   radius: number,
   gridSize: number,
-  colorType: SignalColor = 'green'
+  colorType: SignalColor = 'green',
+  pattern: BurstPattern = 'radial'
 ): GridCell[][] => {
 
 
@@ -28,53 +31,43 @@ export const emitSignalBurst = (
   const [baseR, baseG, baseB] = getColorRGB(colorType)
 
 
+  const patternCells = getPattern(pattern, radius)
 
 
 
-  for (let dy = -radius; dy <= radius; dy++) {
-    for (let dx = -radius; dx <= radius; dx++) {
-      const dist = Math.sqrt(dx * dx + dy * dy)
+  patternCells.forEach(({ dx, dy, intensity: patternIntensity }) => {
+    const targetX = gridX + dx
+    const targetY = gridY + dy
+    
+    if (targetX >= 0 && targetX < gridSize && 
+        targetY >= 0 && targetY < gridSize) {
+      const targetCell = newGrid[targetY][targetX]
       
-      if (dist <= radius) {
-        const targetX = gridX + dx
-        const targetY = gridY + dy
-        
 
 
-
-        if (targetX >= 0 && targetX < gridSize && 
-            targetY >= 0 && targetY < gridSize) {
-          const targetCell = newGrid[targetY][targetX]
-          
-
-
-
-          const intensityBoost = 1 - (dist / radius)
-          targetCell.intensity = Math.min(1, targetCell.intensity + intensityBoost)
-          
-          
-          const colorBoost = intensityBoost * 0.9
-          const [newR, newG, newB] = addColors(
-            targetCell.r, targetCell.g, targetCell.b,
-            baseR * colorBoost, baseG * colorBoost, baseB * colorBoost
-          )
-          
-          targetCell.r = newR
-          targetCell.g = newG
-          targetCell.b = newB
-          
-          updateCellColor(targetCell)
-        }
-      }
+      const intensityBoost = patternIntensity
+      targetCell.intensity = Math.min(1, targetCell.intensity + intensityBoost)
+      
+      
+      const colorBoost = intensityBoost * 0.9
+      const [newR, newG, newB] = addColors(
+        targetCell.r, targetCell.g, targetCell.b,
+        baseR * colorBoost, baseG * colorBoost, baseB * colorBoost
+      )
+      
+      targetCell.r = newR
+      targetCell.g = newG
+      targetCell.b = newB
+      
+      updateCellColor(targetCell)
     }
-  }
+  })
 
 
 
 
   return newGrid
 }
-
 
 
 
@@ -119,4 +112,4 @@ export const  decaySignals = (
 
   return newGrid
  
-}
+} 
