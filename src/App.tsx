@@ -7,6 +7,7 @@ import type { GridCell } from './utils/gridUtils'
 import { emitSignalBurst, decaySignals } from './utils/signalUtils'
 import { createRipple, updateRipples } from './utils/rippleUtils'
 import type { Ripple } from './utils/rippleUtils'
+import { applyNoise } from './utils/noiseUtils'
 
 
 const GRID_SIZE = 32
@@ -16,6 +17,7 @@ const DECAY_RATE = 0.015
 const DECAY_INTERVAL = 50   
 const MAX_INTENSITY = 1.0  
 const RIPPLE_INTERVAL = 60  
+const NOISE_INTERVAL = 120  
 
 
 function App( ) {
@@ -23,6 +25,7 @@ function App( ) {
   const [gridData, setGridData] = useState<GridCell[][]>([])
   const [signalCount, setSignalCount] = useState(0)
   const [ripples, setRipples] = useState<Ripple[]>([])
+  const [noiseEnabled, setNoiseEnabled] = useState(true)
 
 
   useEffect(() => {
@@ -30,6 +33,32 @@ function App( ) {
     setGridData(newGrid)
     console.log('grid initialized')
   }, [])
+
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'n' || e.key === 'N') {
+        setNoiseEnabled(prev => !prev)
+        console.log(`noise ${!noiseEnabled ? 'on' : 'off'}`)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [noiseEnabled])
+ 
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (noiseEnabled) {
+        setGridData(prevGrid => applyNoise(prevGrid, GRID_SIZE))
+      }
+    }, NOISE_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [noiseEnabled])
+
 
 
   useEffect(() => {
@@ -127,11 +156,14 @@ function App( ) {
       />
       
       <div className="debug-overlay">
-        <p>echogrid v0.3</p>
+        <p>echogrid v0.4</p>
         <p>signals: {signalCount}</p>
         <p>ripples: {ripples.length}</p>
         <p style={{fontSize: '9px', opacity: 0.5}}>
           decay: {DECAY_RATE}
+        </p>
+        <p style={{fontSize: '9px', opacity: 0.5}}>
+          noise: {noiseEnabled ? 'on' : 'off'} [n]
         </p>
       </div>
     </div>
