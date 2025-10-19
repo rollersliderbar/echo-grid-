@@ -1,43 +1,45 @@
-# echogridd
+# echogrid
 
-**Real-time multiplayer signal experiment.**  
-Send echoes into a shared grid. Watch them collide, merge, ripple.
+signal visualization thing. click around, catch ghost signals, decode stuff. 
 
-## vibe
-Chaotic communal visual signal space. Glitch art meets geometry.  
-Signal noise meets collective mind energy.
+basically just a grid where you emit signals and watch them decay. theres also ghost signals floating around that you can capture and decode, its defo not a rickroll
 
-## stack
-- React + TypeScript + Vite
-- (socket.io for multiplayer later)
+## what it does
+- 48x48 grid with neon aesthetic
+- click to emit signal bursts
+- ghost signals appear randomly and move around
+- capture ghosts by clicking near them
+- decode captured signals (3 step process leads to you know what)
+- story fragments unlock as you capture more ghosts
+- pattern challenges if youre into that
+- keyboard shortcuts for different colors and patterns
 
-## setup
+## running it
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173` and **click anywhere** to emit signals.
+then open localhost:5173 and start clicking
 
-## features (so far)
-- ✅ Base grid canvas (32x32 cells)
-- ✅ Dark signal aesthetic
-- ✅ Debug overlay
-- ✅ **Click to emit signal bursts** 🔥
-- ✅ **Radial burst pattern with falloff**
-- ✅ **Dynamic color based on intensity**
-- ✅ **Auto-decay: signals fade out over time** ⏱️
-- ✅ **Refactored code into utils modules**
+## controls
+- click anywhere = emit signal
+- 1-6 = change colors (green/red/blue/cyan/magenta/yellow)
+- q/w/e/r/t = different burst patterns
+- n = toggle noise
+- space = capture nearby ghost
+- tutorial button shows all this anyway
 
-## todo
-- [ ] Animated ripple propagation (waves!)
-- [ ] Collision detection between signals
-- [ ] Random background noise/static
-- [ ] Multiplayer sync (socket.io)
-- [ ] Audio feedback???
-- [ ] Keyboard shortcuts for burst sizes
-- [ ] Different signal types/colors
+## features
+- ghost signal system (they just float around until you catch them)
+- story mode thing (unlock fragments by capturing)
+- pattern challenges (match the 5x5 pattern in center)
+- decode modal (rickroll reveal)
+- animations with irregular timing so it doesnt look too smooth
+- inconsistent spacing in code because why not
+
+
 
 ---
 
-*built in chaotic 30min bursts*
+pointles sbut i luv it
