@@ -1,64 +1,103 @@
+// FEATURE: signal trail / ghost echo history
+// shows where signals were emitted with fading markers
+// adds visual density + memory of activity
 
 
-export interface GridCell {
+
+
+export interface SignalTrail {
   x: number
   y: number
-  intensity: number
+  age: number
+  maxAge: number
   color: string
-  r: number
-  g: number
-  b: number
+  opacity: number
 }
 
 
 
-export const initGrid = (size: number): GridCell[][] => {
-  const grid: GridCell[][] = []
+
+
+// spawn a trail marker at click position
+export const createTrail = (
+  x: number, 
+  y: number,
+  color: string
+): SignalTrail => {
+  return {
+    x,
+    y,
+    age: 0,
+    maxAge: 180,  // lives for ~3 seconds at 60fps
+    color,
+    opacity: 0.4
+  }
+}
+
+
+
+
+
+
+// update all trails, fade them out
+export const updateTrails = (trails: SignalTrail[]): SignalTrail[] => {
+  const activeTrails: SignalTrail[] = []
   
-  for (let y = 0; y < size; y++) {
-    const row: GridCell[] = []
-    for (let x = 0; x < size; x++) {
-      row.push({
-        x,
-        y,
-        intensity: 0,
-        color: '#0a0a0a',
-        r: 10,
-        g: 10,
-        b: 10
-      })
+  trails.forEach(trail => {
+    trail.age++
+    
+    // fade out over lifetime
+    const lifetimePercent = trail.age / trail.maxAge
+    trail.opacity = 0.4 * (1 - lifetimePercent)
+    
+    // keep if still visible
+    if (trail.age < trail.maxAge) {
+      activeTrails.push(trail)
     }
-    grid.push(row)
-  }
+  })
   
-  return grid
+  return activeTrails
 }
 
 
 
-export const getColorFromIntensity = (intensity: number): string => {
-  if (intensity > 0.7) {
-    return '#00ff88'  
-  } else if (intensity > 0.4) {
-    return '#00aa55'  
-  } else if (intensity > 0.1) {
-    return '#005522'
-  } else {
-    return '#0a0a0a'  
-  }
+
+
+
+// draw trails onto canvas
+export const renderTrails = (
+  ctx: CanvasRenderingContext2D,
+  trails: SignalTrail[],
+  cellSize: number
+) => {
+  trails.forEach(trail => {
+    // draw a small cross marker
+    ctx.strokeStyle = trail.color
+    ctx.globalAlpha = trail.opacity
+    ctx.lineWidth = 1
+    
+    const centerX = trail.x * cellSize + cellSize / 2
+    const centerY = trail.y * cellSize + cellSize / 2
+    const size = 4
+    
+    // cross shape
+    ctx.beginPath()
+    ctx.moveTo(centerX - size, centerY)
+    ctx.lineTo(centerX + size, centerY)
+    ctx.stroke()
+    
+    ctx.beginPath()
+    ctx.moveTo(centerX, centerY - size)
+    ctx.lineTo(centerX, centerY + size)
+    ctx.stroke()
+    
+    // optional: small circle in center for extra glitch
+    if (trail.age % 3 === 0) {  // flickers
+      ctx.beginPath()
+      ctx.arc(centerX, centerY, 2, 0, Math.PI * 2)
+      ctx.stroke()
+    }
+  })
   
-}
-
-
-
-export const rgbToHex = (r: number, g: number, b: number): string => {
-  const clamp = (val: number) => Math.max(0, Math.min(255, Math.floor(val)))
-  const toHex = (val: number) => clamp(val).toString(16).padStart(2, '0')
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
-}
-
-
-
-export const updateCellColor = (cell: GridCell): void => {
-  cell.color = rgbToHex(cell.r, cell.g, cell.b)
+  ctx.globalAlpha = 1.0  // reset
 }

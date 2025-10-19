@@ -10,6 +10,8 @@ import type { Ripple } from './utils/rippleUtils'
 import { applyNoise } from './utils/noiseUtils'
 import type { SignalColor } from './utils/colorUtils'
 import type { BurstPattern } from './utils/patternUtils'
+import { createTrail, updateTrails, renderTrails } from './utils/trailUtils'
+import type { SignalTrail } from './utils/trailUtils'
 
 
 const GRID_SIZE = 32
@@ -30,6 +32,7 @@ function App( ) {
   const [noiseEnabled, setNoiseEnabled] = useState(true)
   const [currentColor, setCurrentColor] = useState<SignalColor>('green')
   const [currentPattern, setCurrentPattern] = useState<BurstPattern>('radial')
+  const [trails, setTrails] = useState<SignalTrail[]>([])  // ghost echoes
 
 
   useEffect(() => {
@@ -124,6 +127,19 @@ function App( ) {
   }, [ripples, gridData])
 
 
+  
+  // trail updater — fades out ghost markers
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (trails.length > 0) {
+        setTrails(prevTrails => updateTrails(prevTrails))
+      }
+    }, 50)  // update every 50ms
+    
+    return () => clearInterval(interval)
+  }, [trails])
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,6 +176,11 @@ function App( ) {
 
     const newRipple = createRipple(gridX, gridY, currentColor)
     setRipples([...ripples, newRipple])
+    
+    
+    // spawn ghost trail marker
+    const newTrail = createTrail(gridX, gridY, currentColor)
+    setTrails([...trails, newTrail])
   }
 
 
@@ -187,7 +208,11 @@ function App( ) {
         )
       })
     })
-  }, [gridData])
+    
+    
+    // render ghost trails on top
+    renderTrails(ctx, trails, CELL_SIZE)
+  }, [gridData, trails])
 
   return  (
     <div className="App">
@@ -206,9 +231,10 @@ function App( ) {
       />
       
       <div className="debug-overlay">
-        <p>echogrid v0.6</p>
+        <p>echogrid v0.7</p>
         <p>signals: {signalCount}</p>
         <p>ripples: {ripples.length}</p>
+        <p>trails: {trails.length}</p>
         <p style={{fontSize: '10px', opacity: 0.7}}>
           color: <span style={{color: currentColor}}>{currentColor}</span>
         </p>
