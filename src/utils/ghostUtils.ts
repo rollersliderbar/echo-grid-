@@ -3,42 +3,56 @@
 export interface GhostSignal {
   id: string
   x: number
+
   y: number
-  vx: number  // velocity x
+  vx: number
   vy: number  
+
   color: string
   age: number
+
   maxAge: number
   message: string  
   captured: boolean
 }
 
 
-
-// spawn a ghost signal at random position
-
-
-
-
 export const createGhostSignal = (gridSize: number): GhostSignal => {
+
   const messages = [
-    "signal intercepted... decoding...",
-    "transmission from 2124...",
-    "do you hear the frequency?",
-    "this echo traveled far...",
-    "someone left this here long ago..."
+    "signal from nowhere",
+    "timestamp error: 2124",
+
+    "frequency detected",
+    "old transmission found",
+    "echo from the void",
+
+    "unauthorized broadcast",
+    "signal degraded 67%",
+    "origin: unknown sector",
+
+    "looping since 2089",
+    "corrupted data packet",
+
+    "ghost in the machine",
+    "temporal anomaly detected"
   ]
 
+  const colors = ['#00ffff', '#00ff88', '#0088ff', '#ff00ff', '#ffff00']
 
   return {
     id: `ghost_${Date.now()}_${Math.random()}`,
+
     x: Math.random() * gridSize,
     y: Math.random() * gridSize,
-    vx: (Math.random() - 0.5) * 0.3,  
-    vy: (Math.random() - 0.5) * 0.3,
-    color: '#00ffff',  
+
+    vx: (Math.random() - 0.5) * 0.4,  
+    vy: (Math.random() - 0.5) * 0.4,
+
+    color: colors[Math.floor(Math.random() * colors.length)],  
     age: 0,
-    maxAge: 600,  
+
+    maxAge: 500 + Math.random() * 300,  
     message: messages[Math.floor(Math.random() * messages.length)],
     captured: false
   }
@@ -46,15 +60,12 @@ export const createGhostSignal = (gridSize: number): GhostSignal => {
 
 
 
-
-
-
 export const updateGhosts = (
+
   ghosts: GhostSignal[],
-
-
   gridSize: number
 ): GhostSignal[] => {
+
   const activeGhosts: GhostSignal[] = []
 
 
@@ -63,17 +74,20 @@ export const updateGhosts = (
 
 
     ghost.age++
-    ghost.x += ghost.vx
-    ghost.y += ghost.vy
+    
+    // add slight drift variation (not perfectly smooth)
+    const drift = Math.sin(ghost.age * 0.02) * 0.015
+    ghost.x += ghost.vx + drift
+    ghost.y += ghost.vy - drift * 0.7
 
 
-    // bounce off edges
+    // bounce off edges with slight randomness
     if (ghost.x < 0 || ghost.x > gridSize) {
-      ghost.vx *= -1
+      ghost.vx *= -(0.95 + Math.random() * 0.1)
       ghost.x = Math.max(0, Math.min(gridSize, ghost.x))
     }
     if (ghost.y < 0 || ghost.y > gridSize) {
-      ghost.vy *= -1
+      ghost.vy *= -(0.95 + Math.random() * 0.1)
       ghost.y = Math.max(0, Math.min(gridSize, ghost.y))
     }
 
@@ -108,11 +122,13 @@ export const renderGhosts = (
 
 
    
-    const pulse = Math.sin(ghost.age * 0.1) * 0.3 + 0.7
-    const size = 6 * pulse
+    // irregular pulsing with jitter
+    const pulse = Math.sin(ghost.age * 0.087) * 0.3 + 0.7
+    const jitter = Math.sin(ghost.age * 0.31) * 0.08
+    const size = (6 + jitter) * pulse
 
 
-    ctx.globalAlpha = 0.3 * pulse
+    ctx.globalAlpha = (0.3 + Math.random() * 0.05) * pulse
     ctx.fillStyle = ghost.color
     ctx.beginPath()
     ctx.arc(centerX, centerY, size * 2, 0, Math.PI * 2)
@@ -120,19 +136,21 @@ export const renderGhosts = (
 
 
     
-    ctx.globalAlpha = 0.8
+    ctx.globalAlpha = 0.8 + Math.random() * 0.1
     ctx.fillStyle = '#ffffff'
     ctx.beginPath()
     ctx.arc(centerX, centerY, size * 0.5, 0, Math.PI * 2)
     ctx.fill()
 
 
-    // question mark indicator
-    ctx.globalAlpha = 0.6
+    // question mark with slight wobble
+    const wobbleX = Math.sin(ghost.age * 0.13) * 0.5
+    const wobbleY = Math.cos(ghost.age * 0.19) * 0.4
+    ctx.globalAlpha = 0.6 + Math.random() * 0.15
     ctx.fillStyle = ghost.color
     ctx.font = '8px monospace'
     ctx.textAlign = 'center'
-    ctx.fillText('?', centerX, centerY - 10)
+    ctx.fillText('?', centerX + wobbleX, centerY - 10 + wobbleY)
   })
 
 

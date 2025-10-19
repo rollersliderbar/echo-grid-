@@ -1,33 +1,33 @@
 import type { GridCell } from './gridUtils'
 import { updateCellColor } from './gridUtils'
+
 import type { SignalColor } from './colorUtils'
 import { getColorRGB, addColors } from './colorUtils'
 
-// expanding ripple effect from signal bursts
 
 export interface Ripple {
+
   x: number
   y: number
 
   currentRadius: number
-
   maxRadius: number
 
   intensity: number
-
   age: number
+
   colorType: SignalColor
 }
 
 export const createRipple = (x: number, y: number, colorType: SignalColor = 'green'): Ripple => {
+
   return {
     x,
     y,
+
     currentRadius: 0,
-
-
-
     maxRadius: 8,
+
     intensity: 0.6,
     age: 0,
     colorType
@@ -35,27 +35,21 @@ export const createRipple = (x: number, y: number, colorType: SignalColor = 'gre
 }
 
 
+
 export const updateRipples = (
   ripples: Ripple[],
 
-
-
-
   grid: GridCell[][],
-
-
-  gridSize: number): { ripples: Ripple[], grid: GridCell[][] } => {
-
-
+  gridSize: number
+): { ripples: Ripple[], grid: GridCell[][] } => {
 
   const newGrid = grid.map(row => row.map(cell => ({...cell})))
+
   const activeRipples: Ripple[] = []
 
-
-
   ripples.forEach(ripple => {
-    ripple.age++
 
+    ripple.age++
 
 
     ripple.currentRadius += 0.4  

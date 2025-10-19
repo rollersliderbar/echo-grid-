@@ -1,8 +1,4 @@
 
-// basic grid cell structure
-
-
-//tooke me most time cuz it was confusing
 
 export interface GridCell {
   x: number
@@ -11,8 +7,6 @@ export interface GridCell {
   r: number
   g: number
   b: number
-
-
   color: string
 }
 
@@ -20,17 +14,17 @@ export interface GridCell {
 export const initGrid = (size: number): GridCell[][] => {
   const grid: GridCell[][] = []
 
-
   for (let y = 0; y < size; y++) {
     const row: GridCell[] = []
     for (let x = 0; x < size; x++) {
       row.push({
         x,
-
         y,
+
         intensity: 0,
         r: 0,
         g: 0,
+
         b: 0,
         color: '#0a0a0a'
       })
@@ -42,11 +36,12 @@ export const initGrid = (size: number): GridCell[][] => {
 }
 
 
-// updates cell color based on rgb values
+
 export const updateCellColor = (cell: GridCell): void => {
   const r = Math.floor(cell.r)
   const g = Math.floor(cell.g)
-  const b = Math.floor(cell.b)
 
+  const b = Math.floor(cell.b)
   cell.color = `rgb(${r}, ${g}, ${b})`
 }
+
