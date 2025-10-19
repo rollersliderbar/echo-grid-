@@ -1,103 +1,52 @@
-// FEATURE: signal trail / ghost echo history
-// shows where signals were emitted with fading markers
-// adds visual density + memory of activity
+
+// basic grid cell structure
 
 
+//tooke me most time cuz it was confusing
 
-
-export interface SignalTrail {
+export interface GridCell {
   x: number
   y: number
-  age: number
-  maxAge: number
+  intensity: number
+  r: number
+  g: number
+  b: number
+
+
   color: string
-  opacity: number
 }
 
 
+export const initGrid = (size: number): GridCell[][] => {
+  const grid: GridCell[][] = []
 
 
+  for (let y = 0; y < size; y++) {
+    const row: GridCell[] = []
+    for (let x = 0; x < size; x++) {
+      row.push({
+        x,
 
-// spawn a trail marker at click position
-export const createTrail = (
-  x: number, 
-  y: number,
-  color: string
-): SignalTrail => {
-  return {
-    x,
-    y,
-    age: 0,
-    maxAge: 180,  // lives for ~3 seconds at 60fps
-    color,
-    opacity: 0.4
+        y,
+        intensity: 0,
+        r: 0,
+        g: 0,
+        b: 0,
+        color: '#0a0a0a'
+      })
+    }
+    grid.push(row)
   }
+
+  return grid
 }
 
 
+// updates cell color based on rgb values
+export const updateCellColor = (cell: GridCell): void => {
+  const r = Math.floor(cell.r)
+  const g = Math.floor(cell.g)
+  const b = Math.floor(cell.b)
 
-
-
-
-// update all trails, fade them out
-export const updateTrails = (trails: SignalTrail[]): SignalTrail[] => {
-  const activeTrails: SignalTrail[] = []
-  
-  trails.forEach(trail => {
-    trail.age++
-    
-    // fade out over lifetime
-    const lifetimePercent = trail.age / trail.maxAge
-    trail.opacity = 0.4 * (1 - lifetimePercent)
-    
-    // keep if still visible
-    if (trail.age < trail.maxAge) {
-      activeTrails.push(trail)
-    }
-  })
-  
-  return activeTrails
-}
-
-
-
-
-
-
-// draw trails onto canvas
-export const renderTrails = (
-  ctx: CanvasRenderingContext2D,
-  trails: SignalTrail[],
-  cellSize: number
-) => {
-  trails.forEach(trail => {
-    // draw a small cross marker
-    ctx.strokeStyle = trail.color
-    ctx.globalAlpha = trail.opacity
-    ctx.lineWidth = 1
-    
-    const centerX = trail.x * cellSize + cellSize / 2
-    const centerY = trail.y * cellSize + cellSize / 2
-    const size = 4
-    
-    // cross shape
-    ctx.beginPath()
-    ctx.moveTo(centerX - size, centerY)
-    ctx.lineTo(centerX + size, centerY)
-    ctx.stroke()
-    
-    ctx.beginPath()
-    ctx.moveTo(centerX, centerY - size)
-    ctx.lineTo(centerX, centerY + size)
-    ctx.stroke()
-    
-    // optional: small circle in center for extra glitch
-    if (trail.age % 3 === 0) {  // flickers
-      ctx.beginPath()
-      ctx.arc(centerX, centerY, 2, 0, Math.PI * 2)
-      ctx.stroke()
-    }
-  })
-  
-  ctx.globalAlpha = 1.0  // reset
+  cell.color = `rgb(${r}, ${g}, ${b})`
 }

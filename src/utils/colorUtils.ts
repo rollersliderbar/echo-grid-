@@ -1,9 +1,9 @@
 
 
 
+// color system for signals
+
 export type SignalColor = 'green' | 'red' | 'blue' | 'cyan' | 'magenta' | 'yellow'
-
-
 
 export const getColorRGB = (colorType: SignalColor): [number, number, number] => {
   switch (colorType) {
@@ -18,12 +18,16 @@ export const getColorRGB = (colorType: SignalColor): [number, number, number] =>
     case 'magenta':
       return [255, 0, 255]
     case 'yellow':
+      
       return [255, 255, 0]
     default:
-      return [0, 255, 136]
+      return [0, 255, 136] 
+
+
+
+
   }
 }
-
 
 
 export const mixColors = (
@@ -37,7 +41,6 @@ export const mixColors = (
     b1 * (1 - weight) + b2 * weight
   ]
 }
-
 
 
 export const addColors = (
